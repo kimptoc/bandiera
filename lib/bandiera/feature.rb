@@ -35,6 +35,10 @@ module Bandiera
       end
     end
 
+    def enabled_for_user?(user_feature)
+      Zlib.crc32(user_feature.index.to_s) % 100 < self.percentage
+    end
+
     def user_groups_list
       user_groups.fetch(:list, [])
     end

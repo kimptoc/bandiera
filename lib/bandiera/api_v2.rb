@@ -25,14 +25,24 @@ module Bandiera
     end
 
     get '/groups/:group_name/features/:feature_name' do |group_name, feature_name|
-      feature  = Bandiera::Feature.stub_feature(feature_name, group_name)
-      response = { response: feature_enabled?(feature) }
+      feature   = Bandiera::Feature.stub_feature(feature_name, group_name)
+      response  = { response: feature_enabled?(feature) }
 
-      begin
-        feature             = feature_service.get_feature(group_name, feature_name)
-        response[:response] = feature_enabled?(feature)
-      rescue *[Bandiera::FeatureService::GroupNotFound, Bandiera::FeatureService::FeatureNotFound] => e
-        response[:warning] = e.message
+      if feature.percentage && !params[:user_id]
+        raise "you need to pass a user id"
+      end
+
+      if feature.percentage
+        user_id   = params[:user_id]
+        user_feature = feature_service.get_user_feature(user_id, feature)
+        response[:response] = feature_enabled_for_user?(feature, user_feature)
+      else
+        begin
+          feature             = feature_service.get_feature(group_name, feature_name)
+          response[:response] = feature_enabled?(feature)
+        rescue *[Bandiera::FeatureService::GroupNotFound, Bandiera::FeatureService::FeatureNotFound] => e
+          response[:warning] = e.message
+        end
       end
 
       json_or_jsonp(response)
@@ -46,6 +56,10 @@ module Bandiera
 
     def feature_enabled?(feature)
       feature.enabled?(user_group: current_user_group)
+    end
+
+    def feature_enabled_for_user?(feature, user_feature)
+      feature.enabled_for_user?(user_feature)
     end
 
     def features_enabled_hash(features)
