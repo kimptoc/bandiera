@@ -36,15 +36,15 @@ module Bandiera
     end
 
     def enabled_for_user?(user_feature)
-      Zlib.crc32(user_feature.index.to_s) % 100 < self.percentage
+      Zlib.crc32(user_feature.index) % 100 < self.percentage
     end
 
     def user_groups_list
-      user_groups.fetch(:list, [])
+      user_groups.symbolize_keys.fetch(:list, [])
     end
 
     def user_groups_regex
-      user_groups.fetch(:regex, '')
+      user_groups.symbolize_keys.fetch(:regex, '')
     end
 
     def user_groups_configured?

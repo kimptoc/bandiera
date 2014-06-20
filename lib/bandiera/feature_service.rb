@@ -20,8 +20,7 @@ module Bandiera
       Group.find_or_create(name: group)
     end
 
-    def get_user_feature(user_id, feature)
-      feature_id = 1
+    def get_user_feature(user_id, feature_id)
       uf = UserFeature.find(user_id: user_id, feature_id: feature_id)
       if uf
         uf
@@ -120,10 +119,9 @@ module Bandiera
 
     def get_feature(group, name)
       group_id = find_group_id(group)
-      row      = db[:features].first(group_id: group_id, name: name)
-      fail FeatureNotFound, "Cannot find feature '#{name}'" unless row
-
-      build_feature_from_group_and_row(group, row)
+      feature = Feature.first(group_id: group_id, name: name)
+      fail FeatureNotFound, "Cannot find feature '#{name}'" unless feature
+      feature
     end
 
     private
