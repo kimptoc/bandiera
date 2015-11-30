@@ -1,8 +1,5 @@
-ci-server-host: 10.230.12.24:8153
+ci-server-host: te-prod-go-01.springer-sbm.com
 language: ruby
-go-pipeline-group: Misc.Microservices
-cf-username: workshop
+go-pipeline-group: Nature.Tools
+cf-username: teworkshop
 cf-password: letmein
-environment-groups:
-    - name: dev
-      cf-space: workshop
