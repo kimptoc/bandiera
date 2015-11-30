@@ -1,0 +1,11 @@
+code:
+  build: .
+  dns: *DNS
+  volumes:
+    - .:/home/dev/code
+
+deploy:
+  image: docker-registry.tools.pe.springer-sbm.com/springersbm/fig-env-deploy-to-cf
+  dns: *DNS
+  volumes:
+    - .:/home/dev/code
