@@ -1,0 +1,8 @@
+ci-server-host: 10.230.12.24:8153
+language: ruby
+go-pipeline-group: Misc.Microservices
+cf-username: workshop
+cf-password: letmein
+environment-groups:
+    - name: dev
+      cf-space: workshop
